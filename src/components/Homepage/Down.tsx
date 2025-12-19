@@ -1,13 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { DropdownMenuRadioGroupDemo } from "../ui/lastmonth";
-import Last from "../last/Last";
-
-
 
 const Down = () => {
-  const lineRef = useRef(null);
-  const lineInstance = useRef(null);
+  const lineRef = useRef<HTMLCanvasElement | null>(null);
+  const lineInstance = useRef<Chart | null>(null);
 
   const [visible, setVisible] = useState({
     current: true,
@@ -21,13 +18,10 @@ const Down = () => {
     for (let i = 0; i < 15; i++) {
       const d = new Date();
       d.setDate(today.getDate() - i);
-
-      const day = d.getDate();
-      const month = d.toLocaleString("en-US", { month: "short" });
-
-      dates.push(`${month} ${day}`);
+      dates.push(
+        `${d.toLocaleString("en-US", { month: "short" })} ${d.getDate()}`
+      );
     }
-
     return dates.reverse();
   };
 
@@ -45,8 +39,9 @@ const Down = () => {
 
   useEffect(() => {
     if (lineInstance.current) lineInstance.current.destroy();
+    if (!lineRef.current) return;
 
-    const ctx = lineRef.current.getContext("2d");
+    const ctx = lineRef.current.getContext("2d")!;
 
     lineInstance.current = new Chart(ctx, {
       type: "line",
@@ -54,7 +49,6 @@ const Down = () => {
         labels: dates,
         datasets: [
           {
-            label: "Current Year",
             data: currentYear,
             hidden: !visible.current,
             borderColor: "rgba(0,0,255,0.7)",
@@ -63,7 +57,6 @@ const Down = () => {
             tension: 0,
           },
           {
-            label: "Last Year",
             data: lastYear,
             hidden: !visible.last,
             borderColor: "rgba(100,150,150,0.7)",
@@ -76,43 +69,38 @@ const Down = () => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }, // We use our custom legend
-        },
+        plugins: { legend: { display: false } },
         scales: {
           x: {
             grid: { display: true, color: "rgba(0,0,0,0.1)" },
-            ticks: { font: { size: 15 } },
+            ticks: { font: { size: 12 } },
           },
-          y: {
-            display: false,
-            grid: { display: false },
-          },
+          y: { display: false },
         },
       },
     });
   }, [visible]);
 
-  // Toggle handler
-  const toggleLine = (type) => {
+  const toggleLine = (type: "current" | "last") => {
     setVisible((prev) => ({ ...prev, [type]: !prev[type] }));
   };
 
   return (
-    <div className="px-4 py-4 w-220  pb-8">
+    <div className="px-4 sm:px-6 py-4 w-full lg:w-[880px] pb-6 sm:pb-8">
       <div>
-        <div className="text-2xl font-semibold">Revenue Generated</div>
+        <div className="text-xl sm:text-2xl font-semibold">
+          Revenue Generated
+        </div>
 
-        {/* ⭐ TEXT + TOGGLE LEGENDS IN ONE ROW */}
-        <div className="flex justify-between items-center mb-3">
+        {/* TEXT + LEGENDS */}
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-3">
           {/* Left Text */}
-          <div className="text-gray-600">
+          <div className="text-gray-600 text-sm sm:text-base">
             Amount of revenue in this month comparing to last year
           </div>
 
           {/* Right Legend Toggle */}
-          <div className="flex items-center gap-6">
-
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             {/* Current Year */}
             <div
               className="flex items-center gap-2 cursor-pointer select-none"
@@ -124,9 +112,9 @@ const Down = () => {
                   background: "rgba(0,0,255,0.7)",
                   opacity: visible.current ? 1 : 0.3,
                 }}
-              ></span>
+              />
               <span
-                className="text-sm"
+                className="text-xs sm:text-sm"
                 style={{ opacity: visible.current ? 1 : 0.4 }}
               >
                 Current Year
@@ -135,7 +123,7 @@ const Down = () => {
 
             {/* Last Year */}
             <div
-              className="flex items-center gap-2 cursor-pointer select-none"
+              className="flex items-center gap-2 cursor-pointer select-none flex-wrap"
               onClick={() => toggleLine("last")}
             >
               <span
@@ -144,29 +132,26 @@ const Down = () => {
                   background: "rgba(100,150,150,0.7)",
                   opacity: visible.last ? 1 : 0.3,
                 }}
-              ></span>
+              />
               <span
-                className="text-sm"
+                className="text-xs sm:text-sm"
                 style={{ opacity: visible.last ? 1 : 0.4 }}
               >
                 Last Year
               </span>
-              <div className="border rounded-full bg-green-100 border-green-400">
+
+              <div className="border rounded-full bg-green-100 border-green-400 px-2 text-xs">
                 +6.19%
               </div>
-              <div className=" ">
-             <DropdownMenuRadioGroupDemo />
-              </div>
-                
-              
-    
-            
+
+              <DropdownMenuRadioGroupDemo />
             </div>
           </div>
         </div>
 
-        <div className="w-210 pt-2 h-64">
-          <canvas ref={lineRef}></canvas>
+        {/* Chart */}
+        <div className="w-full pt-2 h-56 sm:h-64">
+          <canvas ref={lineRef} />
         </div>
       </div>
     </div>

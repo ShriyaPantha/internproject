@@ -45,23 +45,21 @@ export default function Navbar({ setText }: NavbarProps) {
   }
 
   return (
-    <header className="flex justify-between items-center px-6 py-4 border-b bg-white shadow-sm">
-
-      {/* 🔍 SEARCH BAR (LEFT) */}
-      <div className="flex items-center w-1/3">
+    <header className="flex flex-col sm:flex-row justify-between items-center gap-4 px-4 sm:px-6 py-3 sm:py-4 border-b bg-white shadow-sm">
+      {/* 🔍 SEARCH BAR */}
+      <div className="w-full sm:w-1/3">
         <div className="relative w-full">
           <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-500" />
           <input
             type="text"
             placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 outline-none"
+            className="w-full pl-10 pr-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-blue-400 outline-none text-sm"
           />
         </div>
       </div>
 
-      {/* RIGHT SIDE ICONS + FLAG DROPDOWN */}
-      <div className="flex items-center gap-6">
-
+      {/* RIGHT SIDE */}
+      <div className="flex items-center gap-4 sm:gap-6">
         {/* 🔔 Bell */}
         <Bell className="w-5 h-5 text-gray-700 cursor-pointer" />
 
@@ -77,12 +75,12 @@ export default function Navbar({ setText }: NavbarProps) {
           />
 
           {open && (
-            <div className="absolute right-0 mt-3 w-48 bg-white shadow-xl rounded-xl border py-2 z-50">
+            <div className="absolute right-0 mt-3 w-44 sm:w-48 bg-white shadow-xl rounded-xl border py-2 z-50">
               {languages.map((lang) => (
                 <button
                   key={lang.code}
                   onClick={() => changeLanguage(lang)}
-                  className="flex justify-between items-center w-full px-3 py-2 hover:bg-gray-100 rounded-lg"
+                  className="flex justify-between items-center w-full px-3 py-2 hover:bg-gray-100 rounded-lg text-sm"
                 >
                   <div className="flex items-center gap-2">
                     <img
@@ -100,10 +98,9 @@ export default function Navbar({ setText }: NavbarProps) {
           )}
         </div>
 
-        {/* 👤 User Icon */}
+        {/* 👤 User */}
         <User className="w-6 h-6 text-gray-800 cursor-pointer" />
         <UserMenu />
-
       </div>
     </header>
   );

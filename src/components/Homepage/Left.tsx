@@ -1,5 +1,10 @@
 import { img4 } from "@/constants/image";
-import { DollarSignIcon, Search, ShoppingCartIcon, LoaderCircle } from "lucide-react";
+import {
+  DollarSignIcon,
+  Search,
+  ShoppingCartIcon,
+  LoaderCircle,
+} from "lucide-react";
 
 const StatItem = ({
   icon,
@@ -10,10 +15,14 @@ const StatItem = ({
   count: string;
   label: string;
 }) => (
-  <div className="flex items-center gap-3 ">
+  <div className="flex items-center gap-3">
     {icon}
-    <span className="text-3xl font-bold text-gray-600">{count}</span>
-    <span className="text-sm font-medium text-gray-500">{label}</span>
+    <span className="text-2xl sm:text-3xl font-bold text-gray-600">
+      {count}
+    </span>
+    <span className="text-xs sm:text-sm font-medium text-gray-500">
+      {label}
+    </span>
   </div>
 );
 
@@ -21,8 +30,8 @@ const StatsSection = () => (
   <div className="space-y-3">
     <StatItem
       icon={
-        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <Search className="w-5 h-5 text-blue-600" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
+          <Search className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
         </div>
       }
       count="2,110"
@@ -31,8 +40,8 @@ const StatsSection = () => (
 
     <StatItem
       icon={
-        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <DollarSignIcon className="w-5 h-5 text-blue-600" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
+          <DollarSignIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
         </div>
       }
       count="$8.2M"
@@ -41,8 +50,8 @@ const StatsSection = () => (
 
     <StatItem
       icon={
-        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <ShoppingCartIcon className="w-5 h-5 text-blue-600" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
+          <ShoppingCartIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
         </div>
       }
       count="1,124"
@@ -53,10 +62,10 @@ const StatsSection = () => (
 
 const Left = () => {
   return (
-    <div className="bg-gray-50 pt-9 px-9  w-80 border-r-1">
+    <div className="bg-gray-50 pt-6 sm:pt-9 px-4 sm:px-9 w-full lg:w-80 border-r">
       {/* Date + Greeting */}
       <div className="border-b pb-4">
-        <span className="text-gray-600 text-md block mb-1 ">
+        <span className="text-gray-600 text-sm sm:text-md block mb-1">
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",
             month: "short",
@@ -65,7 +74,7 @@ const Left = () => {
           })}
         </span>
 
-        <h2 className="text-2xl font-semibold text-gray-800 leading-snug">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
           Good Morning,
           <div>Captain!</div>
         </h2>
@@ -73,7 +82,7 @@ const Left = () => {
 
       {/* Updates Section */}
       <div className="border-b pb-4 mt-5">
-        <div className="text-gray-500 text-sm mb-3 tracking-wide">
+        <div className="text-gray-500 text-xs sm:text-sm mb-3">
           Updates from yesterday
         </div>
         <StatsSection />
@@ -81,19 +90,18 @@ const Left = () => {
 
       {/* Orders Section */}
       <div className="mt-5">
-        <div className="pb-4 text-gray-600 font-medium">
+        <div className="pb-4 text-gray-600 text-sm sm:text-base font-medium">
           You have 16 orders today.
         </div>
 
-        {/* SCROLLABLE ORDER LIST */}
-        <div className="overflow-y-auto max-h-[420px] pr-1">
+        {/* STRAIGHT LINE SCROLLBAR */}
+        <div className="line-scroll overflow-y-auto max-h-[300px] sm:max-h-[420px] pr-3">
           {Array.from({ length: 12 }).map((_, i) => (
             <div
               key={i}
-              className="flex justify-between items-center bg-gray-100  gap-3 rounded-md mb-2"
+              className="flex items-center gap-3 bg-gray-100 rounded-md mb-2 p-2"
             >
-              {/* Image */}
-              <div className="w-15 h-10 flex-shrink-0">
+              <div className="w-14 h-10 flex-shrink-0">
                 <img
                   src={img4}
                   alt="Sofa"
@@ -101,16 +109,14 @@ const Left = () => {
                 />
               </div>
 
-              {/* Product Info */}
-              <div className="flex flex-col flex-1">
-                <span className="text-gray-800 font-semibold">
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="text-gray-800 text-sm font-semibold truncate">
                   Advanced Soft...
                 </span>
-                <span className="text-gray-600 mt-1">$427</span>
+                <span className="text-gray-600 text-xs mt-1">$427</span>
               </div>
 
-              {/* Loader Icon */}
-              <div className="flex items-center justify-center w-7 h-7 border-2 border-red-200 rounded-full bg-white hover:bg-red-50 transition-colors">
+              <div className="w-7 h-7 flex items-center justify-center border border-red-200 rounded-full bg-white">
                 <LoaderCircle className="w-3 h-3 text-red-500" />
               </div>
             </div>

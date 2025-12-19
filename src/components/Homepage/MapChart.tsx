@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { DropdownMenuRadioGroupDemo } from "../ui/lastmonth";
 import Chart from "chart.js/auto";
+import WorldMapCard from "./WorldMap";
 // import WorldMap from "../Homepage/WorldMap";
  // 👉 import the map here
 
@@ -42,7 +43,8 @@ const MapChart = () => {
   }, []);
 
   return (
-    <div className="px-5 py-4">
+    <div className="px-5 py-4 bg-gray-50">
+      
       <div className="flex justify-between">
         <div className="text-xl px-9 font-bold">Most Clients</div>
         <DropdownMenuRadioGroupDemo />
@@ -52,7 +54,7 @@ const MapChart = () => {
 
       {/* ⭐ MAP SECTION ABOVE BAR CHART */}
       <div className="px-9 mt-6">
-        {/* <WorldMap /> */}
+        <WorldMapCard/>
       </div>
 
       {/* ⭐ BAR CHART BELOW */}

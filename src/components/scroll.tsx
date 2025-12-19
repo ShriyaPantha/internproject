@@ -1,6 +1,6 @@
 import * as React from "react";
 import Autoplay from "embla-carousel-autoplay";
-import { CarouselContent, CarouselItem, CarouselPrevious, CarouselNext, PhotoCarousel } from "@/components/ui/carousel";
+import { CarouselContent, CarouselItem,  PhotoCarousel } from "@/components/ui/carousel";
 import { img1, img2, img3 } from "@/constants/image";
 
 const CarouselPlugin = () => {
@@ -90,8 +90,6 @@ const CarouselPlugin = () => {
 
       </CarouselContent>
 
-      <CarouselPrevious />
-      <CarouselNext />
     </PhotoCarousel>
   );
 };
