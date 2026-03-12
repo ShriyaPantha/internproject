@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema(
         product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
+          required: true,
         },
         quantity: {
           type: Number,
@@ -34,10 +35,17 @@ const orderSchema = new mongoose.Schema(
 
     address: {
       type: String,
-      required: true,
+      required: false,
+    },
+
+    payment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Payment",
+      default: null,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
-const Order = mongoose.model("Order", orderSchema);
-module.exports = Order
+
+module.exports =
+  mongoose.models.Order || mongoose.model("Order", orderSchema);
