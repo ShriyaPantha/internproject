@@ -1,12 +1,20 @@
+import { useState } from "react"
 import {
-  BellIcon, BookCopyIcon, CalendarCheck, CalendarRangeIcon, ChartBarIcon, ChartNoAxesCombinedIcon,
-  CircleArrowOutDownLeft,
-  CirclePlayIcon, CircleQuestionMarkIcon, CircleUserIcon, ClipboardClockIcon,
+  ChartNoAxesCombinedIcon,
+  ClipboardClockIcon,
+  PhoneCallIcon,
+  PersonStanding,
+  TimerResetIcon,
+  PresentationIcon,
+  ShoppingCart,
+  CircleQuestionMarkIcon,
+  DiamondPlusIcon,
+  MonitorCheckIcon,
   ComponentIcon,
-  DiamondPlusIcon, FileCheck2Icon, FileUpIcon, KanbanIcon, MailCheck,
-  MonitorCheckIcon, Music2Icon, NewspaperIcon, PaperclipIcon, PersonStanding, PhoneCallIcon,
-  PlaneLandingIcon, PresentationIcon, ShieldCloseIcon, ShoppingCart,
-  SquareUserIcon, TimerResetIcon, TriangleAlertIcon
+  CircleArrowOutDownLeft,
+  Music2Icon,
+  ChevronDown,
+  Search,
 } from "lucide-react"
 
 import {
@@ -18,46 +26,90 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
 
 import { Link, useLocation } from "react-router-dom"
-import { Search } from "lucide-react"
-import { logo } from "@/constants/image";
+import { logo } from "@/constants/image"
 
-
-
-// Helper component for rendering menu lists
+/* ---------- SIMPLE MENU ---------- */
 function RenderMenu({ items }: { items: any[] }) {
-  const location = useLocation();
+  const location = useLocation()
 
   return (
     <SidebarMenu>
-
       {items.map((item) => {
-        const isActive = location.pathname === item.url;
+        const isActive = location.pathname === item.url
 
         return (
           <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild>
               <Link
                 to={item.url}
-                className={`flex items-center gap-3 px-2 py-2 rounded-md transition-all
-                  ${isActive ? "bg-blue-500 text-white" : "hover:bg-blue-50 text-gray-700"}
-                `}
+                className={`flex items-center gap-3 rounded-md px-2 py-2 text-sm font-medium transition
+                  ${
+                    isActive
+                      ? "bg-blue-500 text-white dark:bg-blue-500/20 dark:text-blue-400"
+                      : "text-gray-700 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-800"
+                  }`}
               >
                 <item.icon className="w-4 h-4" />
-                <span className="text-sm font-medium">{item.title}</span>
+                {item.title}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-        );
+        )
       })}
     </SidebarMenu>
-  );
+  )
 }
 
-// Menu Lists
+/* ---------- MULTI LEVEL MENU ---------- */
+function MultiLevelMenu({ item }: { item: any }) {
+  const [open, setOpen] = useState(false)
+  const location = useLocation()
+
+  return (
+    <div className="space-y-1">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between rounded-md px-2 py-2 text-sm
+        text-gray-700 hover:bg-blue-50
+        dark:text-gray-300 dark:hover:bg-gray-800"
+      >
+        <div className="flex items-center gap-3">
+          <item.icon className="w-4 h-4" />
+          {item.title}
+        </div>
+        <ChevronDown className={`w-4 h-4 transition ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="ml-6 space-y-1">
+          {item.children.map((child: any) =>
+            child.children ? (
+              <MultiLevelMenu key={child.title} item={child} />
+            ) : (
+              <Link
+                key={child.title}
+                to={child.url}
+                className={`block rounded-md px-2 py-1 text-sm transition
+                  ${
+                    location.pathname === child.url
+                      ? "bg-blue-500 text-white dark:bg-blue-500/20 dark:text-blue-400"
+                      : "text-gray-700 hover:bg-blue-50 dark:text-gray-300 dark:hover:bg-gray-800"
+                  }`}
+              >
+                {child.title}
+              </Link>
+            )
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ---------- MENU DATA ---------- */
 const menuItems = [
   { title: "E-commerce", url: "/", icon: ShoppingCart },
   { title: "Project", url: "/project", icon: ClipboardClockIcon },
@@ -68,114 +120,112 @@ const menuItems = [
   { title: "Hiring", url: "/hiring", icon: PresentationIcon },
 ]
 
-const appItems = [
-  { title: "E-commerce", url: "/apps/ecommerce", icon: ShoppingCart },
-  { title: "CRM", url: "/apps/crm", icon: PhoneCallIcon },
-  { title: "Invoice", url: "/apps/invoice", icon: NewspaperIcon },
-  { title: "E-mail", url: "/apps/email", icon: MailCheck },
-  { title: "Events", url: "/apps/events", icon: FileCheck2Icon },
-  { title: "Kanban", url: "/apps/kanban", icon: KanbanIcon },
-  { title: "Hiring", url: "/apps/hiring", icon: PaperclipIcon },
-  { title: "Chat", url: "/apps/chat", icon: ChartBarIcon },
-  { title: "Social", url: "/apps/social", icon: SquareUserIcon },
-  { title: "Filemanager", url: "/apps/filemanager", icon: FileUpIcon },
-  { title: "Calendar", url: "/apps/calendar", icon: CalendarRangeIcon },
-  { title: "Scheduler", url: "/apps/scheduler", icon: CalendarCheck },
-]
-
-const pageitems = [
-  { title: "Landing", url: "/pages/landing", icon: PlaneLandingIcon },
-  { title: "Starter", url: "/pages/starter", icon: CirclePlayIcon },
-  { title: "Account", url: "/pages/account", icon: CircleUserIcon },
-  { title: "Notifications", url: "/pages/notifications", icon: BellIcon },
-  { title: "Authentication", url: "/pages/auth", icon: ShieldCloseIcon },
-  { title: "Error 404", url: "/pages/404", icon: TriangleAlertIcon },
-]
-
-const miscitems = [
-  { title: "Pricing", url: "/pricing", icon: ShoppingCart },
-  { title: "FAQ", url: "/faq", icon: CircleQuestionMarkIcon },
-  { title: "Multi-level", url: "/multi-level", icon: DiamondPlusIcon },
+const miscItems = [
+  {
+    title: "Pricing",
+    icon: ShoppingCart,
+    children: [
+      { title: "Pricing Column", url: "/pricing/column" },
+      { title: "Pricing Table", url: "/pricing/table" },
+    ],
+  },
+  {
+    title: "FAQ",
+    url: "/faq",
+    icon: CircleQuestionMarkIcon,
+  },
+  {
+    title: "Multi-level",
+    icon: DiamondPlusIcon,
+    children: [
+      { title: "Level two (1)", url: "/multi/level-2-1" },
+      {
+        title: "Level two (2)",
+        children: [
+          { title: "Level three (3)", url: "/multi/level-3-3" },
+          { title: "Level three (4)", url: "/multi/level-3-4" },
+        ],
+      },
+    ],
+  },
   { title: "Showcase", url: "/showcase", icon: MonitorCheckIcon },
 ]
-const DOCSitems = [
-  { title: "Guide", url: "/pricing", icon: BookCopyIcon },
-  { title: "Components", url: "/faq", icon: ComponentIcon },
-  { title: "Changelog", url: "/multi-level", icon: CircleArrowOutDownLeft },
-  { title: "Migration", url: "/showcase", icon:  Music2Icon },
+
+const docsItems = [
+  { title: "Guide", url: "/guide", icon: ShoppingCart },
+  { title: "Components", url: "/components", icon: ComponentIcon },
+  { title: "Changelog", url: "/changelog", icon: CircleArrowOutDownLeft },
+  { title: "Migration", url: "/migration", icon: Music2Icon },
 ]
 
-
-// Sidebar Component
+/* ---------- SIDEBAR ---------- */
 export function AppSidebar() {
   return (
-    <>
-    <Sidebar className="border-r bg-white p-4">
-     <div className="flex items-center gap-2 px-4 py-4 ">
-        <img src={logo} alt="Aurora" className="w-9 h-9 object-contain" />
-        <h1 className="text-lg font-semibold tracking-wide brown opacity-70">aurora</h1>
+    <Sidebar className="border-r bg-white dark:bg-gray-900 dark:border-gray-800 p-4">
+      {/* LOGO */}
+      <div className="flex items-center gap-2 px-4 py-4">
+        <img src={logo} alt="Aurora" className="w-9 h-9" />
+        <h1 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+          aurora
+        </h1>
       </div>
 
-
-
-      {/* Logo Section */}
       <SidebarContent className="px-2 space-y-4">
-
         <SidebarGroup>
-          <div>
-            <img src="" alt="" />
-          </div>
-
-          <SidebarGroupLabel>HOMEPAGE</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-gray-500 dark:text-gray-400">
+            HOMEPAGE
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <RenderMenu items={menuItems} />
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>APPS</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <RenderMenu items={appItems} />
+          <SidebarGroupLabel className="text-gray-500 dark:text-gray-400">
+            MISC
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="space-y-1">
+            {miscItems.map((item) =>
+              item.children ? (
+                <MultiLevelMenu key={item.title} item={item} />
+              ) : (
+                <SidebarMenuButton asChild key={item.title}>
+                  <Link
+                    to={item.url}
+                    className="flex items-center gap-3 rounded-md px-2 py-2 text-sm
+                    text-gray-700 hover:bg-blue-50
+                    dark:text-gray-300 dark:hover:bg-gray-800"
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {item.title}
+                  </Link>
+                </SidebarMenuButton>
+              )
+            )}
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* SEARCH */}
+        <div className="px-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <input
+              placeholder="Search Docs"
+              className="w-full rounded-full border border-gray-300 bg-white px-9 py-1 text-sm
+              dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+            />
+          </div>
+        </div>
 
         <SidebarGroup>
-          <SidebarGroupLabel>PAGES</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-gray-500 dark:text-gray-400">
+            DOCS
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <RenderMenu items={pageitems} />
+            <RenderMenu items={docsItems} />
           </SidebarGroupContent>
         </SidebarGroup>
-
-        <SidebarGroup className=" border-b-2 border-l-black">
-          <SidebarGroupLabel>MISC</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <RenderMenu items={miscitems} />
-          </SidebarGroupContent>
-        </SidebarGroup>
-        {/* Search Docs Section */}
-{/* Search Docs Section */}
-<div className="px-3 pb-4 pt-4">
-  <div className="relative mt-2">
-    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-    <input
-      type="text"
-      placeholder="Search Docs"
-      className="w-full pl-9 pr-3 py-1 rounded-full border border-gray-300 text-sm
-      focus:outline-none focus:ring-1 focus:ring-blue-500"
-      />
-  </div>
-</div>
- <SidebarGroup className=" border-b-2 border-l-black">
-          <SidebarGroupLabel>DOCS</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <RenderMenu items={DOCSitems} />
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-
-
       </SidebarContent>
     </Sidebar>
-      </>
   )
 }

@@ -10,7 +10,6 @@ export default function DoughnutBrands() {
     const canvas = chartRef.current;
     if (!canvas) return;
 
-    // ensure canvas can receive pointer events (overlay will be pointer-events-none)
     canvas.style.touchAction = "none";
 
     const ctx = canvas.getContext("2d");
@@ -38,214 +37,144 @@ export default function DoughnutBrands() {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: {
-          mode: "nearest",
-          intersect: true,
-        },
-        events: ["mousemove", "pointerdown", "pointermove", "pointerup", "touchstart", "touchmove", "touchend"],
+        interaction: { mode: "nearest", intersect: true },
+        events: [
+          "mousemove",
+          "pointerdown",
+          "pointermove",
+          "pointerup",
+          "touchstart",
+          "touchmove",
+          "touchend",
+        ],
         plugins: {
           legend: { display: false },
           tooltip: {
             enabled: true,
-            backgroundColor: "rgba(0,0,0,0.85)",
-            titleColor: "#fff",
-            bodyColor: "#fff",
+            backgroundColor: "rgba(255,255,255,0.9)",
+            titleColor: "#111827",
+            bodyColor: "#111827",
             padding: 8,
             displayColors: false,
-            // you can customize the tooltip label here
             callbacks: {
               label: (ctx: any) => {
                 const label = ctx.label ?? "";
                 const value = ctx.raw ?? ctx.parsed ?? "";
-                // compute percentage if you want:
-                // const total = ctx.dataset.data.reduce((a:number,b:number)=>a+b,0);
-                // const pct = ((value/total)*100).toFixed(1) + "%";
                 return `${label}: ${value}%`;
               },
             },
           },
         },
+        scales: {},
       },
     });
 
     chartInstance.current = chart;
 
-    // Helper to convert client coords -> chart elements & show tooltip
     const showTooltipAt = (clientX: number, clientY: number) => {
       if (!chart || !canvas) return;
-
       const rect = canvas.getBoundingClientRect();
       const x = clientX - rect.left;
       const y = clientY - rect.top;
+      const ev = { clientX, clientY } as unknown as Event;
 
-      // Chart.js expects an event-like object with clientX/clientY
-      const ev = { clientX: clientX, clientY: clientY } as unknown as Event;
-
-      // get elements under the point
-      const elements = chart.getElementsAtEventForMode(ev, "nearest", { intersect: true }, true);
+      const elements = chart.getElementsAtEventForMode(
+        ev,
+        "nearest",
+        { intersect: true },
+        true
+      );
 
       if (elements && elements.length) {
-        // elements are objects with datasetIndex & index
-        // Use setActiveElements + tooltip.setActiveElements (works in modern Chart.js)
-        try {
-          // set active elements for visual highlight
-          if (typeof chart.setActiveElements === "function") {
-            chart.setActiveElements(elements);
-          } else if (chart.tooltip && typeof chart.tooltip.setActiveElements === "function") {
-            // fallback
-            chart.tooltip.setActiveElements(elements, { x: clientX, y: clientY });
-          }
-
-          // show tooltip using new API if available
-          if (chart.tooltip && typeof chart.tooltip.setActiveElements === "function") {
-            chart.tooltip.setActiveElements(elements, { x: clientX, y: clientY });
-          }
-
-          // update chart without animation
-          chart.update("none");
-        } catch (err) {
-          // fallback: call update only (older Chart.js versions)
-          chart.update();
-        }
+        chart.setActiveElements?.(elements);
+        chart.tooltip?.setActiveElements?.(elements, { x: clientX, y: clientY });
+        chart.update("none");
       } else {
-        // clear active elements / hide tooltip if tap outside slices
-        try {
-          if (chart.setActiveElements) chart.setActiveElements([]);
-          if (chart.tooltip && chart.tooltip.setActiveElements) chart.tooltip.setActiveElements([], { x: clientX, y: clientY });
-          chart.update("none");
-        } catch {
-          chart.update();
-        }
+        chart.setActiveElements?.([]);
+        chart.tooltip?.setActiveElements?.([], { x: clientX, y: clientY });
+        chart.update("none");
       }
     };
 
-    // Pointer events (preferred)
     const onPointer = (e: PointerEvent) => {
-      // only handle primary pointers to avoid multi-touch weirdness
       if (e.isPrimary === false) return;
       showTooltipAt(e.clientX, e.clientY);
     };
-
-    // Touch fallback (for older browsers)
     const onTouch = (e: TouchEvent) => {
       const t = e.changedTouches && e.changedTouches[0];
       if (!t) return;
       showTooltipAt(t.clientX, t.clientY);
     };
+    const onMouse = (e: MouseEvent) => showTooltipAt(e.clientX, e.clientY);
 
-    // Mouse fallback (desktop)
-    const onMouse = (e: MouseEvent) => {
-      showTooltipAt(e.clientX, e.clientY);
-    };
-
-    // Attach listeners
     canvas.addEventListener("pointerdown", onPointer, { passive: true });
     canvas.addEventListener("pointermove", onPointer, { passive: true });
     canvas.addEventListener("touchstart", onTouch, { passive: true });
     canvas.addEventListener("touchmove", onTouch, { passive: true });
     canvas.addEventListener("mousemove", onMouse, { passive: true });
 
-    // Clean up
     return () => {
       canvas.removeEventListener("pointerdown", onPointer);
       canvas.removeEventListener("pointermove", onPointer);
       canvas.removeEventListener("touchstart", onTouch);
       canvas.removeEventListener("touchmove", onTouch);
       canvas.removeEventListener("mousemove", onMouse);
-      if (chartInstance.current) {
-        chartInstance.current.destroy();
-        chartInstance.current = null;
-      }
+      chartInstance.current?.destroy();
+      chartInstance.current = null;
     };
   }, []);
 
   return (
-    <div className="p-6 bg-white  shadow-sm w-full">
-      <div className="flex justify-between">
-        <div>Market Share</div>
+    <div className="p-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 shadow-sm w-full rounded-lg">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div className="font-semibold text-lg">Market Share</div>
         <ThreeDots />
       </div>
 
-      <div className="pb-3">Amount of revenue in one month</div>
+      <div className="text-gray-500 dark:text-gray-400 text-sm pb-3">
+        Amount of revenue in one month
+      </div>
 
+      {/* Doughnut Chart */}
       <div className="flex flex-col items-center">
         <div className="relative w-64 h-64">
-          {/* make canvas fill parent so chart sizing works */}
           <canvas ref={chartRef} className="w-full h-full" />
-
-          {/* Center Text — IMPORTANT: allow touches to pass through */}
+          {/* Center Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <p className="text-3xl font-semibold">$6,322.32</p>
-            <p className="text-gray-500 text-sm">Total transactions</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Total transactions</p>
           </div>
         </div>
       </div>
 
-      <div className="border-b my-6" />
+      <div className="border-b border-gray-200 dark:border-gray-700 my-6" />
 
-      {/* BRAND LIST (unchanged) */}
-    <div className="space-y-4">
-  {/* Alligator */}
-  <div>
-    <div className="flex items-center justify-between py-4">
-      <div className="flex items-center gap-3">
-        <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
-        <span className="font-medium">Alligator</span>
+      {/* Brand List */}
+      <div className="space-y-4">
+        {[
+          { name: "Alligator", color: "bg-blue-500", percent: "29.7%", change: "+6.01%", changeColor: "bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200" },
+          { name: "CheckMark", color: "bg-gray-400", percent: "31.9%", change: "+4.12%", changeColor: "bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200" },
+          { name: "Stripes", color: "bg-gray-700", percent: "23%", change: "-3.91%", changeColor: "bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200" },
+          { name: "Head & Mead", color: "bg-blue-700", percent: "14.4%", change: "0.01%", changeColor: "bg-orange-200 dark:bg-orange-800 text-orange-800 dark:text-orange-200" },
+        ].map((brand, idx) => (
+          <div key={idx}>
+            <div className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-3">
+                <div className={`w-1 h-6 ${brand.color} rounded-full`}></div>
+                <span className="font-medium">{brand.name}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="font-bold">{brand.percent}</span>
+                <span className={`text-xs px-3 py-1 rounded-full ${brand.changeColor}`}>
+                  {brand.change}
+                </span>
+              </div>
+            </div>
+            {idx !== 3 && <div className="border-b border-gray-200 dark:border-gray-700" />}
+          </div>
+        ))}
       </div>
-      <div className="flex items-center gap-3">
-        <span className="font-bold">29.7%</span>
-        <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-600">6.01%</span>
-      </div>
-    </div>
-    <div className="border-b" />
-  </div>
-
-  {/* CheckMark */}
-  <div>
-    <div className="flex items-center justify-between py-4">
-      <div className="flex items-center gap-3">
-        <div className="w-1 h-6 bg-gray-400 rounded-full"></div>
-        <span className="font-medium">CheckMark</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <span className="font-bold">31.9%</span>
-        <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-600">4.12%</span>
-      </div>
-    </div>
-    <div className="border-b" />
-  </div>
-
-  {/* Stripes */}
-  <div>
-    <div className="flex items-center justify-between py-4">
-      <div className="flex items-center gap-3">
-        <div className="w-1 h-6 bg-gray-700 rounded-full"></div>
-        <span className="font-medium">Stripes</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <span className="font-bold">23%</span>
-        <span className="text-xs px-3 py-1 rounded-full bg-red-100 text-red-600">-3.91%</span>
-      </div>
-    </div>
-    <div className="border-b" />
-  </div>
-
-  {/* Head & Mead */}
-  <div>
-    <div className="flex items-center justify-between py-4">
-      <div className="flex items-center gap-3">
-        <div className="w-1 h-6 bg-blue-700 rounded-full"></div>
-        <span className="font-medium">Head & Mead</span>
-      </div>
-      <div className="flex items-center gap-3">
-        <span className="font-bold">14.4%</span>
-        <span className="text-xs px-3 py-1 rounded-full bg-orange-100 text-orange-600">0.01%</span>
-      </div>
-    </div>
-    <div className="" />
-  </div>
-</div>
-
     </div>
   );
 }

@@ -20,6 +20,7 @@ const Homepage = () => {
         <div className="-mx-7 px-7 border-b ">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1.5fr_2fr] gap-6">
             <Left />
+            
 
             <div className="flex flex-col gap-6">
               <div className="flex gap-6 flex-wrap">
@@ -59,14 +60,7 @@ const Homepage = () => {
         </div>
 
       </div>
-      <div className="px-7 py-7 text-sm text-gray-600 flex justify-between">
-        <p>
-          Thankyou For Creating With <strong>Aurora</strong> | 2025@
-          <span className="text-blue-400"> Themewagon</span>
-        </p>
-
-        <span>v1.8.0-rc.1</span>
-      </div>
+      
     </MainLayout>
   );
 };

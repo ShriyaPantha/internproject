@@ -24,7 +24,7 @@ const CarouselPlugin = () => {
 
         {/* Slide 1 */}
         <CarouselItem>
-          <div className="relative bg-gradient-to-br from-white to-green-200/60 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-green-200">
+          <div className="relative bg-linear-to-br from-white to-green-200/60 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-green-200">
             <div className="flex items-center justify-between gap-6 mt-6">
               <div className="flex flex-col gap-3 max-w-sm">
                 <p className="font-semibold text-3xl leading-tight text-green-800 pt-15">
@@ -46,7 +46,7 @@ const CarouselPlugin = () => {
 
         {/* Slide 2 */}
         <CarouselItem>
-          <div className="relative bg-gradient-to-br from-white to-green-200/60 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-green-200">
+          <div className="relative bg-linear-to-br from-white to-green-200/60 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-green-200">
             <div className="flex items-center justify-between gap-6 mt-6">
               <div className="flex flex-col gap-3 max-w-sm">
                 <p className="font-semibold text-3xl leading-tight text-green-800 pt-15">
@@ -64,11 +64,12 @@ const CarouselPlugin = () => {
               </div>
             </div>
           </div>
+          text
         </CarouselItem>
 
         {/* Slide 3 */}
         <CarouselItem>
-          <div className="relative bg-gradient-to-br from-white to-green-200/60 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-green-200">
+          <div className="relative bg-linear-to-br from-white to-green-200/60 backdrop-blur-xl rounded-2xl p-6 shadow-sm border border-green-200">
             <div className="flex items-center justify-between gap-6 mt-6">
               <div className="flex flex-col gap-3 max-w-sm">
                 <p className="font-semibold text-3xl leading-tight text-green-800 pt-15">

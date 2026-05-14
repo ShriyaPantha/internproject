@@ -1,3 +1,5 @@
+// Left.tsx
+import React, { useEffect } from "react";
 import { img4 } from "@/constants/image";
 import {
   DollarSignIcon,
@@ -5,33 +7,39 @@ import {
   ShoppingCartIcon,
   LoaderCircle,
 } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { fetchOrders } from "@/Redux/features/orderSlice";
 
-const StatItem = ({
-  icon,
-  count,
-  label,
-}: {
+// --- StatItem component ---
+interface StatItemProps {
   icon: React.ReactNode;
   count: string;
   label: string;
-}) => (
+}
+
+const StatItem: React.FC<StatItemProps> = ({ icon, count, label }) => (
   <div className="flex items-center gap-3">
     {icon}
-    <span className="text-2xl sm:text-3xl font-bold text-gray-600">
+    <span className="text-2xl sm:text-3xl font-bold text-card-foreground">
       {count}
     </span>
-    <span className="text-xs sm:text-sm font-medium text-gray-500">
+    <span className="text-xs sm:text-sm font-medium text-muted-foreground">
       {label}
     </span>
   </div>
 );
 
-const StatsSection = () => (
+// --- StatsSection component ---
+interface StatsSectionProps {
+  orderCount: number;
+}
+
+const StatsSection: React.FC<StatsSectionProps> = ({ orderCount }) => (
   <div className="space-y-3">
     <StatItem
       icon={
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <Search className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center">
+          <Search className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
         </div>
       }
       count="2,110"
@@ -40,8 +48,8 @@ const StatsSection = () => (
 
     <StatItem
       icon={
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <DollarSignIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center">
+          <DollarSignIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
         </div>
       }
       count="$8.2M"
@@ -50,22 +58,30 @@ const StatsSection = () => (
 
     <StatItem
       icon={
-        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <ShoppingCartIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center">
+          <ShoppingCartIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
         </div>
       }
-      count="1,124"
+      count={orderCount.toString()}
       label="orders"
     />
   </div>
 );
 
-const Left = () => {
+// --- Left Component ---
+const Left: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { orders, loading } = useAppSelector((state) => state.orders);
+
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
   return (
-    <div className="bg-gray-50 pt-6 sm:pt-9 px-4 sm:px-9 w-full lg:w-80 border-r">
+    <div className="bg-card pt-6 sm:pt-9 px-4 sm:px-9 w-full lg:w-80 border-r border-border">
       {/* Date + Greeting */}
-      <div className="border-b pb-4">
-        <span className="text-gray-600 text-sm sm:text-md block mb-1">
+      <div className="border-b border-border pb-4">
+        <span className="text-muted-foreground text-sm sm:text-md block mb-1">
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",
             month: "short",
@@ -74,53 +90,63 @@ const Left = () => {
           })}
         </span>
 
-        <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
+        <h2 className="text-xl sm:text-2xl font-semibold text-card-foreground">
           Good Morning,
           <div>Captain!</div>
         </h2>
       </div>
 
-      {/* Updates Section */}
-      <div className="border-b pb-4 mt-5">
-        <div className="text-gray-500 text-xs sm:text-sm mb-3">
+      {/* Updates / Stats */}
+      <div className="border-b border-border pb-4 mt-5">
+        <div className="text-muted-foreground text-xs sm:text-sm mb-3">
           Updates from yesterday
         </div>
-        <StatsSection />
+
+        <StatsSection orderCount={orders.length} />
       </div>
 
-      {/* Orders Section */}
+      {/* Orders List */}
       <div className="mt-5">
-        <div className="pb-4 text-gray-600 text-sm sm:text-base font-medium">
-          You have 16 orders today.
+        <div className="pb-4 text-muted-foreground text-sm sm:text-base font-medium">
+          You have {orders.length} orders today.
         </div>
 
-        {/* STRAIGHT LINE SCROLLBAR */}
         <div className="line-scroll overflow-y-auto max-h-[300px] sm:max-h-[420px] pr-3">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 bg-gray-100 rounded-md mb-2 p-2"
-            >
-              <div className="w-14 h-10 flex-shrink-0">
-                <img
-                  src={img4}
-                  alt="Sofa"
-                  className="w-full h-full object-cover rounded-md"
-                />
-              </div>
+          {loading ? (
+            <p className="text-sm text-muted-foreground">Loading orders...</p>
+          ) : (
+            orders.map((order) => {
+              const product = order.products?.[0]?.product;
 
-              <div className="flex flex-col flex-1 min-w-0">
-                <span className="text-gray-800 text-sm font-semibold truncate">
-                  Advanced Soft...
-                </span>
-                <span className="text-gray-600 text-xs mt-1">$427</span>
-              </div>
+              return (
+                <div
+                  key={order._id}
+                  className="flex items-center gap-3 bg-muted rounded-md mb-2 p-2"
+                >
+                  <div className="w-14 h-10 shrink-0">
+                    <img
+                      src={product?.image || img4}
+                      alt={product?.title}
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                  </div>
 
-              <div className="w-7 h-7 flex items-center justify-center border border-red-200 rounded-full bg-white">
-                <LoaderCircle className="w-3 h-3 text-red-500" />
-              </div>
-            </div>
-          ))}
+                  <div className="flex flex-col flex-1 min-w-0">
+                    <span className="text-card-foreground text-sm font-semibold truncate">
+                      {product?.title}
+                    </span>
+                    <span className="text-muted-foreground text-xs mt-1">
+                      ${product?.price}
+                    </span>
+                  </div>
+
+                  <div className="w-7 h-7 flex items-center justify-center border border-border rounded-full bg-background">
+                    <LoaderCircle className="w-3 h-3 text-destructive" />
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </div>

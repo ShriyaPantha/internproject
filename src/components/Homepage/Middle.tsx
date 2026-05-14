@@ -80,15 +80,15 @@ const Middle = () => {
   }, []);
 
   return (
-    <div className="bg-white border-b lg:border-r w-full lg:w-[360px]">
+    <div className="bg-white dark:bg-background border-b dark:border-border lg:border-r w-full lg:w-[360px]">
       {/* Monthly Earnings */}
-      <div className="border-b px-4 sm:px-6 py-6 sm:py-9">
+      <div className="border-b dark:border-border px-4 sm:px-6 py-6 sm:py-9">
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white">
               Monthly Earnings
             </h2>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1">
+            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-1">
               Total profit gained
             </p>
           </div>
@@ -97,14 +97,17 @@ const Middle = () => {
 
         <div className="flex items-center justify-between mt-4 gap-3">
           <div>
-            <div className="text-2xl sm:text-3xl font-bold text-gray-700">
+            <div className="text-2xl sm:text-3xl font-bold text-gray-700 dark:text-white">
               $25,049
             </div>
+
             <div className="flex items-center gap-2 text-xs sm:text-sm mt-2">
-              <span className="rounded-full bg-green-100 border border-green-200 px-2 text-green-800">
+              <span className="rounded-full bg-green-100 border border-green-200 px-2 text-green-800 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400">
                 +4.33%
               </span>
-              <span className="text-gray-500">vs last month</span>
+              <span className="text-gray-500 dark:text-gray-400">
+                vs last month
+              </span>
             </div>
           </div>
 
@@ -118,10 +121,10 @@ const Middle = () => {
       <div className="px-4 sm:px-6 py-6 sm:py-9">
         <div className="flex justify-between items-start">
           <div>
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white">
               Visitor Value
             </h2>
-            <p className="text-gray-500 text-xs sm:text-sm mt-1">
+            <p className="text-gray-500 dark:text-gray-400 text-xs sm:text-sm mt-1">
               Avg. income per site visit
             </p>
           </div>
@@ -130,14 +133,17 @@ const Middle = () => {
 
         <div className="flex items-center justify-between mt-4 gap-3">
           <div>
-            <div className="text-2xl sm:text-3xl font-bold text-gray-700">
+            <div className="text-2xl sm:text-3xl font-bold text-gray-700 dark:text-white">
               $63.02
             </div>
+
             <div className="flex items-center gap-2 text-xs sm:text-sm mt-2">
-              <span className="rounded-full bg-red-100 border border-red-200 px-2 text-red-800">
+              <span className="rounded-full bg-red-100 border border-red-200 px-2 text-red-800 dark:bg-red-900/30 dark:border-red-800 dark:text-red-400">
                 -1.03%
               </span>
-              <span className="text-gray-500">vs last month</span>
+              <span className="text-gray-500 dark:text-gray-400">
+                vs last month
+              </span>
             </div>
           </div>
 

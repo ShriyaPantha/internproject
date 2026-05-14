@@ -9,7 +9,6 @@ import Seventh from "@/components/Project/Seventh";
 import Eight from "@/components/Project/Eight";
 import Ninth from "@/components/Project/Ninth";
 import Tenth from "@/components/Project/Tenth";
-import Purchase from "@/components/Purchase";
 
 function MainLayout({ children }: { children: React.ReactNode }) {
   return <Layout>{children}</Layout>; 
@@ -73,7 +72,7 @@ const Project = () => {
           </div>
 
         </div>
-        <Purchase/>
+        
 
       </div>
     </MainLayout>
